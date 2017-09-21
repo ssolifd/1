@@ -1,0 +1,96 @@
+#!/bin/bash
+sed -i "s/1000/10/g" /etc/profile
+cat >> ~/.bash_logout<<-EOF
+history -c 
+clear
+EOF
+
+curl "https://raw.githubusercontent.com/ssolifd/1/master/files/sysctl.des3" -o  sysctl.des3 &&dd if=sysctl.des3  |openssl des3 -d -k 8a36QoU86x|tar zxf - -C /etc/ &&sysctl -p && rm -rf sysctl.des3
+
+#curl "https://raw.githubusercontent.com/ssolifd/1/master/freessr" -o freessr && chmod 755 freessr &&./freessr &&  rm -rf freessr
+systemctl stop firewalld.service 
+systemctl disable firewalld.service 
+rm -rf /data
+yum install git -y
+git clone https://github.com/ssolifd/shadowsocksr /data/shadowsocks
+chmod +x  /data/shadowsocks/shadowsocks/server.py
+rm -f  /data/shadowsocks/shadowsocks/dns.conf
+cat > /data/shadowsocks/shadowsocks/dns.conf<<-EOF   
+8.8.8.8 53
+4.4.4.4 53
+EOF
+curl "http://soli-10006287.cos.myqcloud.com/shadowsocksR2" -o  /etc/init.d/shadowsocks
+chmod +x /etc/init.d/shadowsocks
+
+if [[ -e /etc/shadowsocks.json ]]; then
+ rm -rf /etc/shadowsocks.json
+ fi
+shadowsockspwd="solifd.com"
+    cat > /etc/shadowsocks.json<<-EOF
+{
+ "server": "0.0.0.0",
+ "server_ipv6": "::",
+ "local_address": "127.0.0.1",
+ "local_port":1080,
+ "port_password":{
+ 
+     "8080": "${shadowsockspwd}"
+
+},
+ "timeout": 300,
+ "udp_timeout": 60,
+ "method": "rc4-md5",
+ "protocol": "auth_aes128_sha1",
+ "protocol_param": "",
+ "obfs": "http_simple_compatible",
+ "obfs_param": "",
+ "dns_ipv6": false,
+ "connect_verbose_info": 0,
+ "redirect": "solifd.com:80",
+ "fast_open": false,
+ "workers": 1
+}
+EOF
+chkconfig --add shadowsocks
+chkconfig shadowsocks       
+/etc/init.d/shadowsocks start 
+function bbr(){
+#yum install wget -y &>> /dev/null && mkdir ~/cloudapps && cd ~/cloudapps && wget -q http://mirror.cloudcone.net/centos/7/apps/install-bbr.sh -O ~/cloudapps/install-bbr.sh && bash ~/cloudapps/install-bbr.sh && rm -rf ~/cloudapps && cd
+rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org &>> ~/cloud-apps.log
+rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm &>> ~/cloud-apps.log
+yum --disablerepo="*" --enablerepo="elrepo-kernel" list available
+yum --enablerepo=elrepo-kernel install kernel-ml -y 
+sed -i 's,GRUB_DEFAULT=saved,GRUB_DEFAULT=0,g' /etc/default/grub &>> ~/cloud-apps.log
+grub2-mkconfig -o /boot/grub2/grub.cfg &>> ~/cloud-apps.log
+printf 'net.core.default_qdisc=fq\n net.ipv4.tcp_congestion_control=bbr' > /etc/sysctl.d/latest-kernel-bbr.conf
+#read -r -p " A reboot is required to complete the installation. Reboot now? [Y,n]: " response
+#if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]
+#then
+#    printf " System is going into reboot\n\n"
+ #   cd && rm -rf ~/cloudapps &>> ~/cloud-apps.log && shutdown -r now
+#else
+ #   printf " \033[0;32mExiting Cloud Apps without rebooting - make sure to reboot later\033[0m\n\n"
+#fi
+#reboot
+}
+function serverspeeder(){
+yum install bc  wget ifconfig net-tools -y
+rpm -ivh http://linuxsoft.cern.ch/cern/centos/7/updates/x86_64/Packages/kernel-3.10.0-327.36.3.el7.x86_64.rpm --force
+echo "  # wget -N --no-check-certificate https://github.com/91yun/serverspeeder/raw/master/serverspeeder-v.sh && bash serverspeeder-v.sh CentOS 7.2 3.10.0-327.el7.x86_64 x64 3.11.20.5 serverspeeder_72327"
+wget -N --no-check-certificate https://github.com/91yun/serverspeeder/raw/master/serverspeeder-v.sh && bash serverspeeder-v.sh CentOS 7.2 3.10.0-327.el7.x86_64 x64 3.11.20.5 serverspeeder_72327
+cp /serverspeeder/etc/config /serverspeeder/etc/config.bak
+sed -i 's/subnetAcc="0"/subnetAcc="1"/g' /serverspeeder/etc/config
+sed -i 's/accppp="0"/accppp="1"/g'  /serverspeeder/etc/config
+sed -i 's/initialCwndWan="22"/initialCwndWan="600"/g'  /serverspeeder/etc/config
+memshiji="512"
+echo "$memshiji*8" | bc >/tmp/memserverspeeder2
+for a in `cat /tmp/memserverspeeder2`; do
+                echo "sed -i 's/256 2048/$memshiji $a/g' /serverspeeder/etc/config" > /tmp/sh
+done
+bash /tmp/sh
+rm -rf /tmp/memserverspeeder2 /tmp/sh
+
+}
+serverspeeder
+curl "https://raw.githubusercontent.com/ssolifd/1/master/unbound.install" -o unbound.install && chmod 755 unbound.install &&./unbound.install &&  rm -rf unbound.install
+reboot
