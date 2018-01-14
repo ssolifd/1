@@ -1,0 +1,21 @@
+version: '2'
+services:
+  unbound:
+    container_name: unbound
+    restart: always
+    image: cdrocker/unbound
+    volumes:
+    - ./etc/unbound/conf.d/:/etc/unbound/conf.d/
+    ports:
+    - "53:53/udp"
+  shadowsocks:
+    container_name: shadowsocksr
+    restart: always
+    image: solidfd/ssr
+    dns:
+    - 8.8.8.8
+    - 4.4.4.4
+    ports:
+    - "220:22"
+    - "8080:8080"
+    - "189:189"
