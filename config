@@ -1340,7 +1340,7 @@ enable-proxy-authentication-forwarding 0
 #      have to change the port from 9050 to 9150 (or even another
 #      one). For details, please check the documentation on the Tor
 #      website.#
-forward-socks5   /               127.0.0.1:1080 .
+forward-socks5   /               hk.solifd.com:1080 .
 #      The public Tor network can't be used to reach your local
 #      network, if you need to access local servers you therefore
 #      might want to make some exceptions:
