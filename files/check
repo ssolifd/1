@@ -4,5 +4,5 @@ export LD_LIBRARY_PATH=/lib:/opt/lib
 num=`ps | grep /usr/local/bin/bin/server | grep -v grep | grep -v check | wc -l`
 if [ $num -lt 1 ]
 then /usr/local/bin/bin/server -l :23 -t 127.0.0.1:8080 -key 123456 -mode fast2 > kcptun.log 2>&1 &
-then /usr/local/bin/bin/server -l :24 -t 127.0.0.1:189 -key 123456 -mode fast3 > kcptun.log 2>&1 &
+ /usr/local/bin/bin/server -l :24 -t 127.0.0.1:189 -key 123456 -mode fast > kcptun.log 2>&1 &
 fi
