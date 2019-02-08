@@ -1,5 +1,6 @@
 
     #!/bin/sh
+    # curl https://raw.githubusercontent.com/ssolifd/1/master/ssh-agent.sh - o /etc/profile.d/ssh-agent.sh && chmod +x /etc/profile.d/ssh-agent.sh
     if [ -f ~/.agent.env ]; then
     . ~/.agent.env >/dev/null
     if ! kill -0 $SSH_AGENT_PID >/dev/null 2>&1; then
